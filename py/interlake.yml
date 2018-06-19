@@ -24,19 +24,15 @@ math:
     - name: business_calculus
       depends:
         - business_precalculus
-    - name: AP_Calculus_AB
-      depends:
-        - precalculus
-    - name: AP_Calculus_BC
+    - name: AP_calculus_AB/AP_calculus_BC
       depends:
         - precalculus
     - name: IB_mathematics_SL
       depends:
         - precalculus
     - name: advanced_calculus
-      dependsor:
-        - AP_Calculus_AB
-        - AP_Calculus_BC
+      depends:
+        - "AP_calculus_AB/AP_calculus_BC"
     - name: differential_equations
       depends:
         - advanced_calculus
