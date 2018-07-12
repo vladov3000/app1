@@ -1,25 +1,63 @@
+//python3 schedule.py courses --subject math --course precalculus
 var express = require('express')
   , logger = require('morgan')
   , app = express()
-  , template = require('pug').compileFile(__dirname + '/source/templates/homepage.pug')
-  , template1 = require('pug').compileFile(__dirname + '/source/templates/aboutpage.pug')
+  , url = require('url')
+  , expressValidator = require('express-validator')
+
 
 app.use(logger('dev'))
-app.use(express.static(__dirname + '/static'))
+app.use(expressValidator());
 
-app.get('/', function (req, res, next) {
+app.get('/courses', function (req, res, next) {
   try {
-    var html = template({ title: 'Home' })
-    res.send(html)
-  } catch (e) {
-    next(e)
-  }
-})
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    
+    var q = url.parse(req.url, true);
+    console.log('path:'+q.pathname)
+    console.log('subject:'+req.query.subject)
 
-app.get('/about', function (req, res, next) {
-  try {
-    var html = template1({ title: 'About' })
-    res.send(html)
+    var params = ['schedule.py']
+
+    req.check('subject','Subject Required').notEmpty();
+    req.check('course','Course Required').notEmpty();
+
+    req.sanitize('subject').toString();
+    req.sanitize('course').toString();
+
+    params=params.concat(['courses','--subject',req.query.subject,'--course',req.query.course])
+    console.log(params)
+
+    var errors = req.validationErrors();
+    if (errors) {
+        var response = { errors: [] };
+        errors.forEach(function(err) {
+          response.errors.push(err.msg);
+        });
+        res.statusCode = 400;
+        return res.json(response);
+    }
+
+    var spawn = require('child_process').spawn;
+    var cmd = params 
+    console.log(cmd)
+    var prc = spawn('python3',  cmd);
+
+    prc.stdout.setEncoding('utf8');
+    prc.stdout.on('data', function (data) {
+        var str = data.toString()
+        console.log(str)
+        res.write(str + '\r\n');
+    });
+
+    prc.on('close', function (code) {
+        console.log('process exit code ' + code);
+        res.end();
+    });
+
+
+
   } catch (e) {
     next(e)
   }
