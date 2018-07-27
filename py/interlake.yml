@@ -1,0 +1,46 @@
+math:
+    - name: algebra1
+    - name: geometry
+      depends:
+        - algebra1
+    - name: algebra2
+      depends:
+        - geometry
+    - name: IB_math_studies_SL
+      depends:
+        - algebra2
+    - name: mathematical_models
+      depends:
+        - algebra2
+    - name: business_precalculus
+      depends:
+        - algebra2
+    - name: precalculus
+      depends:
+        - algebra2
+    - name: AP_statistics
+      depends:
+        - algebra2
+    - name: business_calculus
+      depends:
+        - business_precalculus
+    - name: AP_calculus_AB/AP_calculus_BC
+      depends:
+        - precalculus
+    - name: IB_mathematics_SL
+      depends:
+        - precalculus
+    - name: advanced_calculus
+      depends:
+        - "AP_calculus_AB/AP_calculus_BC"
+    - name: differential_equations
+      depends:
+        - advanced_calculus
+    - name: IB_mathematics_HL
+      depends:
+        - IB_mathematics_SL
+    - name: IB_further_mathematics_HL
+      depends:
+        - IB_mathematics_HL
+
+

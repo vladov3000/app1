@@ -37,7 +37,7 @@ def findDep(d,subject,course,visited,final):
 		visited.append(course)
 	final.append(course)
 
-def getGraph(d):
+def getGraph(d,a):
 	f=[]
 	v=[]
 	for s in d.keys():
@@ -45,6 +45,15 @@ def getGraph(d):
 			if k["name"] not in v:
 				v.append(k["name"])
 				findDep(d,s,k["name"],v,f)
+	return f
+
+def getCourses(d,a,s):
+	f=[]
+	v=[]
+	for c in a:
+		if c not in v:
+			v.append(c)
+			findDep(d,s,c,v,f)
 	return f
 
 def getCourse(d,course,subject):
@@ -68,20 +77,22 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('func', type=str, help='function to run: courses, prereqs')
 	parser.add_argument("--subject",dest="subject", help="subject of course",type=str,required=False,default="")
-	parser.add_argument("--course",dest="course", help="course name",type=str,required=False,default="")
+	parser.add_argument("--courses",dest="courses", help="course1,course2", nargs='+', type=str,required=False,default="")
 	args = parser.parse_args()
+	
 	cfg=readConfig("interlake.yml")
 
 	if args.func=='courses':
 		print(getCourses(cfg))
 	elif args.func=='prereqs':
-		if args.course=='':
-			raise Exception("Course required")
+		if args.courses=='':
+			raise Exception("Courses required")
 		if args.subject=='':
 			raise Exception("Subject required")
-		print(getDep(cfg,args.course,args.subject	))
+		print(getCourses(cfg,args.courses,args.subject))
 	else:
 		raise Exception("Not a valid command")
+
 
 if __name__ == '__main__':
     main()
